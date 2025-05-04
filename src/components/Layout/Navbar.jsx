@@ -1,8 +1,39 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../../api/auth';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check authentication status on mount and when token changes
+        const checkAuth = () => {
+            const token = localStorage.getItem('token');
+            setIsAuthenticated(!!token);
+        };
+
+        // Initial check
+        checkAuth();
+
+        // Listen for storage events (in case token is changed in another tab)
+        window.addEventListener('storage', checkAuth);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('storage', checkAuth);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        authAPI.logout();
+        setIsAuthenticated(false);
+        navigate('/login');
+    };
+
+    // Debug log to check authentication state
+    console.log('Is authenticated:', isAuthenticated);
 
     return (
         <nav className="bg-white shadow">
@@ -14,34 +45,47 @@ const Navbar = () => {
                                 FaceDrop
                             </Link>
                         </div>
-                        <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                            <Link
-                                to="/events"
-                                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                            >
-                                Events
-                            </Link>
-                            <Link
-                                to="/events/create"
-                                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                            >
-                                Create Event
-                            </Link>
-                        </div>
+                        {isAuthenticated && (
+                            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                                <Link
+                                    to="/events"
+                                    className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                                >
+                                    Events
+                                </Link>
+                                <Link
+                                    to="/events/create"
+                                    className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                                >
+                                    Create Event
+                                </Link>
+                            </div>
+                        )}
                     </div>
                     <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-                        <Link
-                            to="/login"
-                            className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-                        >
-                            Login
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
-                        >
-                            Register
-                        </Link>
+                        {isAuthenticated ? (
+                            <button
+                                onClick={handleLogout}
+                                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                            >
+                                Logout
+                            </button>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                                >
+                                    Login
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
+                                >
+                                    Register
+                                </Link>
+                            </>
+                        )}
                     </div>
                     <div className="-mr-2 flex items-center sm:hidden">
                         <button
@@ -66,33 +110,48 @@ const Navbar = () => {
             {/* Mobile menu */}
             <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
                 <div className="pt-2 pb-3 space-y-1">
-                    <Link
-                        to="/events"
-                        className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
-                    >
-                        Events
-                    </Link>
-                    <Link
-                        to="/events/create"
-                        className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
-                    >
-                        Create Event
-                    </Link>
+                    {isAuthenticated && (
+                        <>
+                            <Link
+                                to="/events"
+                                className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                            >
+                                Events
+                            </Link>
+                            <Link
+                                to="/events/create"
+                                className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                            >
+                                Create Event
+                            </Link>
+                        </>
+                    )}
                 </div>
                 <div className="pt-4 pb-3 border-t border-gray-200">
                     <div className="space-y-1">
-                        <Link
-                            to="/login"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
-                        >
-                            Login
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
-                        >
-                            Register
-                        </Link>
+                        {isAuthenticated ? (
+                            <button
+                                onClick={handleLogout}
+                                className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                            >
+                                Logout
+                            </button>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                                >
+                                    Login
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                                >
+                                    Register
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
