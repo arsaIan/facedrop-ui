@@ -1,30 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.svg';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // Check authentication status on mount and when token changes
-        const checkAuth = () => {
-            const token = localStorage.getItem('token');
-            setIsAuthenticated(!!token);
-        };
-
-        // Initial check
-        checkAuth();
-
-        // Listen for storage events (in case token is changed in another tab)
-        window.addEventListener('storage', checkAuth);
-
-        // Cleanup
-        return () => {
-            window.removeEventListener('storage', checkAuth);
-        };
-    }, []);
 
     const handleLogout = () => {
         authAPI.logout();
@@ -32,17 +15,15 @@ const Navbar = () => {
         navigate('/login');
     };
 
-    // Debug log to check authentication state
-    console.log('Is authenticated:', isAuthenticated);
-
     return (
         <nav className="bg-white shadow">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
                         <div className="flex-shrink-0 flex items-center">
-                            <Link to="/" className="text-xl font-bold text-gray-800">
-                                FaceDrop
+                            <Link to="/" className="flex items-center">
+                                <img src={logo} alt="FaceDrop" className="h-8 w-8" />
+                                <span className="ml-2 text-xl font-bold text-gray-800">FaceDrop</span>
                             </Link>
                         </div>
                         {isAuthenticated && (

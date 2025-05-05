@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { VideoUrl } from '../../assets/constants';
+import logo from '../../assets/logo.svg';
 
 const LandingPage = () => {
     return (
@@ -17,7 +19,7 @@ const LandingPage = () => {
                         style={{ filter: 'brightness(0.7)' }}
                     >
                         <source
-                            src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38afc35f1a9e7c02d&profile_id=164&oauth2_token_id=57447761"
+                            src={VideoUrl}
                             type="video/mp4"
                         />
                     </video>
@@ -34,7 +36,7 @@ const LandingPage = () => {
                                     <span className="block text-blue-400">With FaceDrop</span>
                                 </h1>
                                 <p className="mt-3 text-base text-gray-200 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                                    The easiest way for photographers to share event photos with attendees. Create an event, let people subscribe, and deliver photos instantly when you're ready.
+                                    From Lens to Inbox instantly.
                                 </p>
                                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                                     <div className="rounded-md shadow">
@@ -209,6 +211,18 @@ const LandingPage = () => {
                     </Link>
                 </div>
             </div>
+
+            {/* Small Footer */}
+            <footer className="bg-white border-t border-gray-100">
+                <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-center space-x-2">
+                        <img src={logo} alt="FaceDrop" className="h-6 w-6" />
+                        <span className="text-sm text-gray-500">
+                            © {new Date().getFullYear()} FaceDrop
+                        </span>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 };

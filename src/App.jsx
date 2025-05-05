@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Layout/Navbar';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
-import Events from './components/Events/Events';
-import EventDetails from './components/Events/EventDetails';
+import EventList from './components/Events/EventList';
+import EventDetail from './components/Events/EventDetail';
 import EventPhotos from './components/Events/EventPhotos';
 import CreateEvent from './components/Events/CreateEvent';
+import EventSubscribers from './components/Events/EventSubscribers';
 import LandingPage from './components/Landing/LandingPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -27,14 +28,6 @@ const App = () => {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route
-                            path="/events"
-                            element={
-                                <PrivateRoute>
-                                    <Events />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
                             path="/events/create"
                             element={
                                 <PrivateRoute>
@@ -43,18 +36,34 @@ const App = () => {
                             }
                         />
                         <Route
-                            path="/events/:id"
-                            element={
-                                <PrivateRoute>
-                                    <EventDetails />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
                             path="/events/:id/photos"
                             element={
                                 <PrivateRoute>
                                     <EventPhotos />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/events/:id/subscribers"
+                            element={
+                                <PrivateRoute>
+                                    <EventSubscribers />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/events/:id"
+                            element={
+                                <PrivateRoute>
+                                    <EventDetail />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/events"
+                            element={
+                                <PrivateRoute>
+                                    <EventList />
                                 </PrivateRoute>
                             }
                         />

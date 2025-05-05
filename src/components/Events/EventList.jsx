@@ -58,11 +58,32 @@ const EventList = () => {
                     <Link
                         key={event.ID}
                         to={`/events/${event.ID}`}
-                        className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+                        className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 overflow-hidden"
                     >
+                        <div className="relative h-48 bg-gray-200">
+                            <img
+                                src={`https://picsum.photos/seed/${event.ID}/800/400`}
+                                alt={event.title}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
                         <div className="p-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-2">{event.title}</h2>
-     
+                            {event.description && (
+                                <p className="text-gray-600 line-clamp-2">{event.description}</p>
+                            )}
+                            {event.created_at && (
+                                <p className="mt-2 text-sm text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    {new Date(event.created_at).toLocaleDateString('en-US', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    })}
+                                </p>
+                            )}
                         </div>
                     </Link>
                 ))}
