@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 const EventQR = ({ eventId, qrCodeUrl }) => {
     // Convert base64 to proper image source
+    console.log(qrCodeUrl);
     const qrImageSource = `data:image/png;base64,${qrCodeUrl}`;
 
     const handleDownload = () => {

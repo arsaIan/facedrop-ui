@@ -2,6 +2,7 @@ import React from 'react';
 import EventQR from './EventQR';
 
 const QRModal = ({ isOpen, onClose, eventId, qrCodeUrl }) => {
+    console.log(qrCodeUrl);
     if (!isOpen) return null;
 
     return (
