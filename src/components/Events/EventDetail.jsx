@@ -17,7 +17,10 @@ const EventDetail = () => {
     const [showQR, setShowQR] = useState(false);
     const [queueStatus, setQueueStatus] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState(null);
+    const [previewUrls, setPreviewUrls] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [previewsPerPage, setPreviewsPerPage] = useState(6);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -35,6 +38,24 @@ const EventDetail = () => {
 
         fetchEvent();
     }, [id]);
+
+    // Calculate number of previews based on screen width
+    useEffect(() => {
+        const updatePreviewsPerPage = () => {
+            const width = window.innerWidth;
+            if (width < 640) { // sm
+                setPreviewsPerPage(2);
+            } else if (width < 1024) { // lg
+                setPreviewsPerPage(4);
+            } else {
+                setPreviewsPerPage(6);
+            }
+        };
+
+        updatePreviewsPerPage();
+        window.addEventListener('resize', updatePreviewsPerPage);
+        return () => window.removeEventListener('resize', updatePreviewsPerPage);
+    }, []);
 
     const handleSubscribe = async () => {
         setIsLoading(true);
@@ -75,34 +96,74 @@ const EventDetail = () => {
         setIsDragging(false);
     };
 
-    const handleFileSelect = (file) => {
-        if (file && file.type.startsWith('image/')) {
+    const processFiles = (files) => {
+        const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+        if (imageFiles.length > 0) {
             const formData = new FormData();
-            formData.append('photo', file);
+            imageFiles.forEach(file => {
+                formData.append('photo', file);
+            });
+            setSelectedFiles(imageFiles);
             setSelectedFile(formData);
             
-            // Create preview URL
-            const url = URL.createObjectURL(file);
-            setPreviewUrl(url);
+            // Create preview URLs for all images
+            const urls = imageFiles.map(file => URL.createObjectURL(file));
+            setPreviewUrls(urls);
+            setCurrentPage(0);
         }
+    };
+
+    const handleFileSelect = (files) => {
+        processFiles(files);
     };
 
     const handleDrop = (e) => {
         e.preventDefault();
         setIsDragging(false);
         
-        const file = e.dataTransfer.files[0];
-        handleFileSelect(file);
-    };
+        const items = e.dataTransfer.items;
+        const files = [];
 
-    // Cleanup preview URL when component unmounts or when file is cleared
-    useEffect(() => {
-        return () => {
-            if (previewUrl) {
-                URL.revokeObjectURL(previewUrl);
+        const processEntry = async (entry) => {
+            if (entry.isFile) {
+                const file = await new Promise(resolve => entry.file(resolve));
+                files.push(file);
+            } else if (entry.isDirectory) {
+                const reader = entry.createReader();
+                const entries = await new Promise(resolve => {
+                    reader.readEntries(resolve);
+                });
+                for (const subEntry of entries) {
+                    await processEntry(subEntry);
+                }
             }
         };
-    }, [previewUrl]);
+
+        const processItems = async () => {
+            for (const item of items) {
+                const entry = item.webkitGetAsEntry();
+                if (entry) {
+                    await processEntry(entry);
+                }
+            }
+            processFiles(files);
+        };
+
+        processItems();
+    };
+
+    // Cleanup preview URLs when component unmounts or when files are cleared
+    useEffect(() => {
+        return () => {
+            previewUrls.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [previewUrls]);
+
+    const totalPages = Math.ceil(previewUrls.length / previewsPerPage);
+    const currentPreviews = previewUrls.slice(
+        currentPage * previewsPerPage,
+        (currentPage + 1) * previewsPerPage
+    );
 
     if (loading) {
         return (
@@ -199,7 +260,7 @@ const EventDetail = () => {
                 <div className="space-y-6">
                     {/* Photo Upload Section */}
                     <div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Upload Event Photo</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-4">Upload Event Photos</h3>
                         <div 
                             className={`border-2 border-dashed rounded-lg p-6 text-center ${
                                 isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
@@ -215,13 +276,16 @@ const EventDetail = () => {
                                     </svg>
                                 </div>
                                 <div className="text-gray-600">
-                                    <p>Drag and drop your photo here, or</p>
+                                    <p>Drag and drop photos or folders here, or</p>
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        onChange={(e) => handleFileSelect(e.target.files[0])}
+                                        onChange={(e) => handleFileSelect(e.target.files)}
                                         className="hidden"
                                         id="file-upload"
+                                        multiple
+                                        webkitdirectory
+                                        directory
                                     />
                                     <label
                                         htmlFor="file-upload"
@@ -234,18 +298,54 @@ const EventDetail = () => {
                         </div>
                         {selectedFile && (
                             <div className="mt-4 space-y-4">
-                                {previewUrl && (
-                                    <div className="flex justify-end">
-                                        <div className="relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 shadow-sm">
-                                            <img
-                                                src={previewUrl}
-                                                alt="Preview"
-                                                className="w-full h-full object-cover"
-                                            />
+                                {previewUrls.length > 0 && (
+                                    <div className="mt-4 border border-gray-200 rounded-md p-3 bg-gray-50">
+                                        <div className="flex items-center mb-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span className="text-xs font-medium text-gray-500">Images</span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 gap-1">
+                                                {currentPreviews.map((url, index) => (
+                                                    <div key={url} className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-200 shadow-sm">
+                                                        <img
+                                                            src={url}
+                                                            alt={`Preview ${index + 1}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {totalPages > 1 && (
+                                                <div className="flex justify-center items-center space-x-1">
+                                                    <button
+                                                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                                                        disabled={currentPage === 0}
+                                                        className="px-1.5 py-0.5 rounded-sm border border-gray-300 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        ←
+                                                    </button>
+                                                    <span className="text-xs text-gray-600">
+                                                        {currentPage + 1}/{totalPages}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                                                        disabled={currentPage === totalPages - 1}
+                                                        className="px-1.5 py-0.5 rounded-sm border border-gray-300 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        →
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}
                                 <div className="flex items-center justify-end space-x-4">
+                                    <span className="text-sm text-gray-500">
+                                        {selectedFiles.length} image{selectedFiles.length !== 1 ? 's' : ''} selected
+                                    </span>
                                     <button
                                         onClick={async () => {
                                             try {
@@ -253,7 +353,8 @@ const EventDetail = () => {
                                                 await eventsAPI.uploadPhoto(id, selectedFile);
                                                 setUploadSuccess(true);
                                                 setSelectedFile(null);
-                                                setPreviewUrl(null);
+                                                setSelectedFiles([]);
+                                                setPreviewUrls([]);
                                             } catch (err) {
                                                 setError(err.message);
                                             } finally {
@@ -271,15 +372,14 @@ const EventDetail = () => {
                                                 </svg>
                                                 Uploading...
                                             </div>
-                                        ) : 'Upload Photo'}
+                                        ) : 'Upload Photos'}
                                     </button>
                                     <button
                                         onClick={() => {
                                             setSelectedFile(null);
-                                            if (previewUrl) {
-                                                URL.revokeObjectURL(previewUrl);
-                                                setPreviewUrl(null);
-                                            }
+                                            setSelectedFiles([]);
+                                            previewUrls.forEach(url => URL.revokeObjectURL(url));
+                                            setPreviewUrls([]);
                                         }}
                                         className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                     >
@@ -290,7 +390,7 @@ const EventDetail = () => {
                         )}
                         {uploadSuccess && (
                             <div className="mt-2 text-sm text-green-600">
-                                Photo uploaded successfully!
+                                Photos uploaded successfully!
                             </div>
                         )}
                     </div>
