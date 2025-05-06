@@ -150,7 +150,7 @@ export const eventsAPI = {
 
     pushToReadyQueue: async (id) => {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/events/${id}/ready-queue`, {
+        const response = await fetch(`${API_URL}/events/${id}/ready`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
