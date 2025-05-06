@@ -29,7 +29,13 @@ const Login = () => {
             localStorage.setItem('token', data.token);
             // Trigger storage event to update navbar
             window.dispatchEvent(new Event('storage'));
-            navigate('/events');
+            // Check if there's a pending subscription
+            const pendingSubscription = localStorage.getItem('pendingSubscription');
+            if (pendingSubscription) {
+                navigate(`/events/subscribe?event=${pendingSubscription}`);
+            } else {
+                navigate('/events');
+            }
         } catch (err) {
             setError(err.message);
         } finally {

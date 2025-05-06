@@ -8,6 +8,7 @@ import EventDetail from './components/Events/EventDetail';
 import EventPhotos from './components/Events/EventPhotos';
 import CreateEvent from './components/Events/CreateEvent';
 import EventSubscribers from './components/Events/EventSubscribers';
+import Subscribe from './components/Events/Subscribe';
 import LandingPage from './components/Landing/LandingPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -27,6 +28,7 @@ const App = () => {
                         <Route path="/" element={<Navigate to="/home" />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/events/subscribe" element={<Subscribe />} />
                         <Route
                             path="/events/create"
                             element={

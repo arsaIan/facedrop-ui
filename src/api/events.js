@@ -93,7 +93,8 @@ export const eventsAPI = {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to subscribe to event');
+            const error = await response.json();
+            throw error;
         }
 
         return response.json();
@@ -118,7 +119,7 @@ export const eventsAPI = {
         // const formData = new FormData();
         // formData.append('photo', photoData);
 
-        const response = await fetch(`${API_URL}/events/${id}/photos`, {
+        const response = await fetch(`${API_URL}/events/${id}/photos/multiple`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

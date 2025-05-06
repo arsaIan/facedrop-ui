@@ -12,12 +12,14 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Check authentication status on mount
         const checkAuth = () => {
             const token = localStorage.getItem('token');
             setIsAuthenticated(!!token);
+            setIsLoading(false);
         };
 
         // Initial check
@@ -34,7 +36,8 @@ export const AuthProvider = ({ children }) => {
 
     const value = {
         isAuthenticated,
-        setIsAuthenticated
+        setIsAuthenticated,
+        isLoading
     };
 
     return (

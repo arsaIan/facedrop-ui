@@ -307,9 +307,9 @@ const EventDetail = () => {
                                             <span className="text-xs font-medium text-gray-500">Images</span>
                                         </div>
                                         <div className="space-y-2">
-                                            <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 gap-1">
+                                            <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 -m-[1px]">
                                                 {currentPreviews.map((url, index) => (
-                                                    <div key={url} className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-200 shadow-sm">
+                                                    <div key={url} className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-200 shadow-sm -m-[1px]">
                                                         <img
                                                             src={url}
                                                             alt={`Preview ${index + 1}`}
