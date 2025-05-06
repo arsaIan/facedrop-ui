@@ -7,8 +7,8 @@ const Register = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         role: 'guest' // Default role
     });
     const [error, setError] = useState(null);
@@ -55,9 +55,9 @@ const Register = () => {
                         Create your account
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        Or{' '}
+                        Or{' '} <br></br>
                         <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                            sign in to your account
+                            Sign in to your account
                         </Link>
                     </p>
                 </div>
@@ -71,26 +71,26 @@ const Register = () => {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
-                            <label htmlFor="firstName" className="sr-only">First Name</label>
+                            <label htmlFor="first_name" className="sr-only">First Name</label>
                             <input
-                                id="firstName"
-                                name="firstName"
+                                id="first_name"
+                                name="first_name"
                                 type="text"
                                 required
-                                value={formData.firstName}
+                                value={formData.first_name}
                                 onChange={handleChange}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="First Name"
                             />
                         </div>
                         <div>
-                            <label htmlFor="lastName" className="sr-only">Last Name</label>
+                            <label htmlFor="last_name" className="sr-only">Last Name</label>
                             <input
-                                id="lastName"
-                                name="lastName"
+                                id="last_name"
+                                name="last_name"
                                 type="text"
                                 required
-                                value={formData.lastName}
+                                value={formData.last_name}
                                 onChange={handleChange}
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Last Name"
