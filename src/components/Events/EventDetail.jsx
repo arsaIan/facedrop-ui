@@ -16,6 +16,8 @@ const EventDetail = () => {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [showQR, setShowQR] = useState(false);
     const [queueStatus, setQueueStatus] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -63,6 +65,44 @@ const EventDetail = () => {
         }
     };
 
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleFileSelect = (file) => {
+        if (file && file.type.startsWith('image/')) {
+            const formData = new FormData();
+            formData.append('photo', file);
+            setSelectedFile(formData);
+            
+            // Create preview URL
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        
+        const file = e.dataTransfer.files[0];
+        handleFileSelect(file);
+    };
+
+    // Cleanup preview URL when component unmounts or when file is cleared
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
 
     if (loading) {
         return (
@@ -160,49 +200,94 @@ const EventDetail = () => {
                     {/* Photo Upload Section */}
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">Upload Event Photo</h3>
-                        <div className="flex items-center space-x-4">
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files[0];
-                                    if (file) {
-                                        const formData = new FormData();
-                                        formData.append('photo', file);
-                                        setSelectedFile(formData);
-                                    }
-                                }}
-                                className="block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-md file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-blue-50 file:text-blue-700
-                                    hover:file:bg-blue-100"
-                            />
-                            {selectedFile && (
-                                <button
-                                    onClick={async () => {
-                                        try {
-                                            setIsUploading(true);
-                                            await eventsAPI.uploadPhoto(id, selectedFile);
-                                            setUploadSuccess(true);
-                                            setSelectedFile(null);
-                                        } catch (err) {
-                                            setError(err.message);
-                                        } finally {
-                                            setIsUploading(false);
-                                        }
-                                    }}
-                                    disabled={isUploading}
-                                    className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 disabled:opacity-50"
-                                    title={isUploading ? 'Uploading...' : 'Upload Photo'}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div 
+                            className={`border-2 border-dashed rounded-lg p-6 text-center ${
+                                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                            }`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                        >
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                     </svg>
-                                </button>
-                            )}
+                                </div>
+                                <div className="text-gray-600">
+                                    <p>Drag and drop your photo here, or</p>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleFileSelect(e.target.files[0])}
+                                        className="hidden"
+                                        id="file-upload"
+                                    />
+                                    <label
+                                        htmlFor="file-upload"
+                                        className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
+                                    >
+                                        Browse Files
+                                    </label>
+                                </div>
+                            </div>
                         </div>
+                        {selectedFile && (
+                            <div className="mt-4 space-y-4">
+                                {previewUrl && (
+                                    <div className="flex justify-end">
+                                        <div className="relative w-10 h-10 rounded-md overflow-hidden border border-gray-200 shadow-sm">
+                                            <img
+                                                src={previewUrl}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-end space-x-4">
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                setIsUploading(true);
+                                                await eventsAPI.uploadPhoto(id, selectedFile);
+                                                setUploadSuccess(true);
+                                                setSelectedFile(null);
+                                                setPreviewUrl(null);
+                                            } catch (err) {
+                                                setError(err.message);
+                                            } finally {
+                                                setIsUploading(false);
+                                            }
+                                        }}
+                                        disabled={isUploading}
+                                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                    >
+                                        {isUploading ? (
+                                            <div className="flex items-center">
+                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Uploading...
+                                            </div>
+                                        ) : 'Upload Photo'}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedFile(null);
+                                            if (previewUrl) {
+                                                URL.revokeObjectURL(previewUrl);
+                                                setPreviewUrl(null);
+                                            }
+                                        }}
+                                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                         {uploadSuccess && (
                             <div className="mt-2 text-sm text-green-600">
                                 Photo uploaded successfully!

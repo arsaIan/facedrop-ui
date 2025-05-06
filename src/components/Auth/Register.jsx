@@ -32,7 +32,7 @@ const Register = () => {
             localStorage.setItem('token', data.token);
             // Trigger storage event to update navbar
             window.dispatchEvent(new Event('storage'));
-            navigate('/events');
+            navigate('/login');
         } catch (err) {
             setError(err.message);
         } finally {
