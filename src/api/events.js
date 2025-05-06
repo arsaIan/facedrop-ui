@@ -160,5 +160,20 @@ export const eventsAPI = {
         if (!response.ok) {
             throw new Error('Failed to push to ready queue');
         }
+    },
+
+    getSubscribers: async (id) => {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/events/${id}/subscribers`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch subscribers');
+        }
+
+        return response.json();
     }
 }; 

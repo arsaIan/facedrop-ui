@@ -11,9 +11,8 @@ const EventSubscribers = () => {
     useEffect(() => {
         const fetchSubscribers = async () => {
             try {
-                const event = await eventsAPI.getById(id);
-                setSubscribers(event.subscribers || []);
-                console.log("subs", event.subscribers);
+                const response = await eventsAPI.getSubscribers(id);
+                setSubscribers(response || []);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -65,6 +64,9 @@ const EventSubscribers = () => {
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Subscribed At
                                         </th>
                                     </tr>
@@ -73,13 +75,23 @@ const EventSubscribers = () => {
                                     {subscribers.map((subscriber) => (
                                         <tr key={subscriber.ID}>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {subscriber.name || 'Anonymous'}
+                                                {subscriber?.user?.first_name || 'Anonymous'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {subscriber.email || 'N/A'}
+                                                {subscriber?.user?.email || 'N/A'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                                    subscriber.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                    subscriber.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    subscriber.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                                    'bg-gray-100 text-gray-800'
+                                                }`}>
+                                                    {subscriber.status.charAt(0).toUpperCase() + subscriber.status.slice(1) || 'unknown'}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {new Date(subscriber.created_at).toLocaleDateString()}
+                                                {new Date(subscriber.subscribed_at).toLocaleDateString()}
                                             </td>
                                         </tr>
                                     ))}
