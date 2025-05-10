@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'facedrop-frontend'
         DOCKER_TAG = "${BUILD_NUMBER}"
-        DOCKER_REPO = 'mouse69/facedrop'
+        DOCKER_REPO = 'mouse69/facedrop-ui'
         DOCKER_REGISTRY = 'docker.io'
     }
 
