@@ -11,20 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Use GitHub PAT credentials as username/password
-                withCredentials([usernamePassword(credentialsId: 'github-creds', 
-                                usernameVariable: 'GITHUB_USER', 
-                                passwordVariable: 'GITHUB_PAT')]) {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/dev']],
-                        extensions: [],
-                        userRemoteConfigs: [[
-                            credentialsId: 'github-credentials',
-                            url: 'git@github.com:arsaIan/facedrop-ui.git'
-                        ]]
-                    ])
-                }
+                checkout scm
             }
         }
 
