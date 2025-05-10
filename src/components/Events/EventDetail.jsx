@@ -211,7 +211,7 @@ const EventDetail = () => {
                             </button>
                             <Link
                                 to={`/events/${id}/photos`}
-                                className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                                className="p-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
                                 title="View Photos"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,7 +220,7 @@ const EventDetail = () => {
                             </Link>
                             <Link
                                 to={`/events/${id}/subscribers`}
-                                className="p-2 text-gray-600 hover:text-green-600 transition-colors duration-200"
+                                className="p-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
                                 title="View Subscribers"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +229,7 @@ const EventDetail = () => {
                             </Link>
                             <button
                                 onClick={handleDelete}
-                                className="p-2 text-gray-600 hover:text-red-600 transition-colors duration-200"
+                                className="p-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
                                 title="Delete Event"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -263,7 +263,7 @@ const EventDetail = () => {
                         <h3 className="text-lg font-medium text-gray-900 mb-4">Upload Event Photos</h3>
                         <div 
                             className={`border-2 border-dashed rounded-lg p-6 text-center ${
-                                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                                isDragging ? 'border-purple-500 bg-purple-50' : 'border-gray-300'
                             }`}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -289,7 +289,7 @@ const EventDetail = () => {
                                     />
                                     <label
                                         htmlFor="file-upload"
-                                        className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
+                                        className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer"
                                     >
                                         Browse Files
                                     </label>
@@ -362,7 +362,7 @@ const EventDetail = () => {
                                             }
                                         }}
                                         disabled={isUploading}
-                                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
                                     >
                                         {isUploading ? (
                                             <div className="flex items-center">
@@ -381,7 +381,7 @@ const EventDetail = () => {
                                             previewUrls.forEach(url => URL.revokeObjectURL(url));
                                             setPreviewUrls([]);
                                         }}
-                                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                         Cancel
                                     </button>
@@ -389,7 +389,7 @@ const EventDetail = () => {
                             </div>
                         )}
                         {uploadSuccess && (
-                            <div className="mt-2 text-sm text-green-600">
+                            <div className="mt-2 text-sm text-purple-600">
                                 Photos uploaded successfully!
                             </div>
                         )}
@@ -412,7 +412,7 @@ const EventDetail = () => {
                                 }
                             }}
                             disabled={isLoading}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
                         >
                             {isLoading ? (
                                 <div className="flex items-center">
@@ -425,7 +425,7 @@ const EventDetail = () => {
                             ) : 'Send to Subscribers'}
                         </button>
                         {queueStatus === 'success' && (
-                            <div className="mt-2 text-sm text-green-600">
+                            <div className="mt-2 text-sm text-purple-600">
                                 Files sent to subscribers. 
                             </div>
                         )}

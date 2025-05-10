@@ -52,7 +52,7 @@ const Login = () => {
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Or{' '}
-                        <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link to="/register" className="font-medium text-purple-600 hover:text-purple-500">
                             create a new account
                         </Link>
                     </p>
@@ -76,7 +76,7 @@ const Login = () => {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
                             />
                         </div>
@@ -90,7 +90,7 @@ const Login = () => {
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
                             />
                         </div>
@@ -102,7 +102,7 @@ const Login = () => {
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                 Remember me
@@ -110,7 +110,7 @@ const Login = () => {
                         </div>
 
                         <div className="text-sm">
-                            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                            <a href="#" className="font-medium text-purple-600 hover:text-purple-500">
                                 Forgot your password?
                             </a>
                         </div>
@@ -121,8 +121,8 @@ const Login = () => {
                             type="submit"
                             disabled={isLoading}
                             className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                                isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                                isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
                         >
                             {isLoading ? 'Signing in...' : 'Sign in'}
                         </button>

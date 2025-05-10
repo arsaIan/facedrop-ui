@@ -19,7 +19,7 @@ const QRModal = ({ isOpen, onClose, eventId, qrCodeUrl }) => {
                     <div className="absolute top-0 right-0 pt-4 pr-4">
                         <button
                             onClick={onClose}
-                            className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                            className="text-gray-400 hover:text-purple-500 focus:outline-none"
                         >
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

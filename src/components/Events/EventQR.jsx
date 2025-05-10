@@ -57,7 +57,7 @@ const EventQR = ({ eventId, qrCodeUrl }) => {
                             <div className="flex justify-center space-x-4 mb-8">
                                 <button
                                     onClick={handleShare}
-                                    className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                                    className="p-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
                                     title="Share QR Code"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +66,7 @@ const EventQR = ({ eventId, qrCodeUrl }) => {
                                 </button>
                                 <button
                                     onClick={handleDownload}
-                                    className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                                    className="p-2 text-gray-600 hover:text-purple-600 transition-colors duration-200"
                                     title="Download QR Code"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,7 +78,7 @@ const EventQR = ({ eventId, qrCodeUrl }) => {
                             <div className="space-y-4">
                                 <Link
                                     to="/events"
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                 >
                                     Back to Events
                                 </Link>

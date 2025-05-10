@@ -81,7 +81,7 @@ const Subscribe = () => {
     if (authLoading || loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
             </div>
         );
     }
@@ -129,8 +129,8 @@ const Subscribe = () => {
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     {subscriptionSuccess ? (
                         <div className="text-center">
-                            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 mb-4">
+                                <svg className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
@@ -138,7 +138,7 @@ const Subscribe = () => {
                             <p className="text-gray-600 mb-4">You are now subscribed to {event.title}</p>
                             <button
                                 onClick={() => navigate(`/events/${eventId}`)}
-                                className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                                className="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
                             >
                                 View Event Details
                             </button>
@@ -152,7 +152,7 @@ const Subscribe = () => {
                             <button
                                 onClick={handleSubscribe}
                                 disabled={isSubscribing}
-                                className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSubscribing ? (
                                     <div className="flex items-center justify-center">

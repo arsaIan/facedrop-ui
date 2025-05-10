@@ -61,7 +61,7 @@ const Navbar = () => {
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
+                                    className="bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-md text-sm font-medium"
                                 >
                                     Register
                                 </Link>
@@ -71,7 +71,7 @@ const Navbar = () => {
                     <div className="-mr-2 flex items-center sm:hidden">
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500"
                         >
                             <span className="sr-only">Open main menu</span>
                             {!isMenuOpen ? (
