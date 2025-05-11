@@ -7,7 +7,7 @@ const LandingPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
             {/* Hero Section with Video Background */}
-            <div className="relative overflow-hidden min-h-[60vh]">
+            <div className="relative overflow-hidden">
                 {/* Video Background */}
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                     <video
