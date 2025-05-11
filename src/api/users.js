@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+import { API_URL } from '../assets/constants';
 
 export const usersAPI = {
     getProfile: async () => {

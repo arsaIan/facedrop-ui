@@ -16,3 +16,4 @@ export const Colors = {
         dark: '#A855F7', // Medium Purple
     }
 };
+export const API_URL = 'https://fd-backend.arsln.dev';
