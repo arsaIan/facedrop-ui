@@ -51,7 +51,7 @@ const UserProfile = () => {
                     <div className="space-x-4">
                         <button
                             onClick={() => window.location.href = `/users/${id}/edit`}
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
                         >
                             Edit Profile
                         </button>
@@ -107,12 +107,12 @@ const UserProfile = () => {
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-full file:border-0
                                         file:text-sm file:font-semibold
-                                        file:bg-blue-50 file:text-blue-700
-                                        hover:file:bg-blue-100"
+                                        file:bg-purple-50 file:text-purple-700
+                                        hover:file:bg-purple-100"
                                 />
                                 <button
                                     type="submit"
-                                    className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                    className="w-full bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
                                 >
                                     Upload Face
                                 </button>

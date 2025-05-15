@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../../api/auth';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+        setIsLoading(true);
         
         try {
-            const response = await fetch('/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Login failed');
+            const data = await authAPI.login(formData);
+            localStorage.setItem('token', data.token);
+            // Trigger storage event to update navbar
+            window.dispatchEvent(new Event('storage'));
+            // Check if there's a pending subscription
+            const pendingSubscription = localStorage.getItem('pendingSubscription');
+            if (pendingSubscription) {
+                navigate(`/events/subscribe?event=${pendingSubscription}`);
+            } else {
+                navigate('/events');
             }
-
-            // Handle successful login
-            const data = await response.json();
-            // Store token or user data as needed
-            window.location.href = '/events';
         } catch (err) {
             setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -41,7 +52,7 @@ const Login = () => {
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Or{' '}
-                        <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+                        <Link to="/register" className="font-medium text-purple-600 hover:text-purple-500">
                             create a new account
                         </Link>
                     </p>
@@ -63,9 +74,9 @@ const Login = () => {
                                 type="email"
                                 autoComplete="email"
                                 required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
                             />
                         </div>
@@ -77,9 +88,9 @@ const Login = () => {
                                 type="password"
                                 autoComplete="current-password"
                                 required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
                             />
                         </div>
@@ -91,7 +102,7 @@ const Login = () => {
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                 Remember me
@@ -99,7 +110,7 @@ const Login = () => {
                         </div>
 
                         <div className="text-sm">
-                            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                            <a href="#" className="font-medium text-purple-600 hover:text-purple-500">
                                 Forgot your password?
                             </a>
                         </div>
@@ -108,9 +119,12 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={isLoading}
+                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                                isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
                         >
-                            Sign in
+                            {isLoading ? 'Signing in...' : 'Sign in'}
                         </button>
                     </div>
                 </form>

@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { eventsAPI } from '../../api/events';
+import EventQR from './EventQR';
 
 const CreateEvent = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        date: '',
-        location: ''
+        endDate: ''
     });
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [createdEvent, setCreatedEvent] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,32 +25,34 @@ const CreateEvent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+        setIsLoading(true);
 
         try {
-            const response = await fetch('/events', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+            const eventData = {
+                ...formData,
+                endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null
+            };
 
-            if (!response.ok) throw new Error('Failed to create event');
-            
-            const data = await response.json();
-            navigate(`/events/${data.id}`);
+            const response = await eventsAPI.create(eventData);
+            setCreatedEvent(response);
         } catch (err) {
             setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
+    if (createdEvent) {
+        return <EventQR eventId={createdEvent.ID} qrCodeUrl={createdEvent.qr_code} />;
+    }
+
     return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="bg-white shadow rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Event</h2>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-3xl mx-auto">
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">Create New Event</h1>
 
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         <span className="block sm:inline">{error}</span>
                     </div>
                 )}
@@ -55,7 +60,7 @@ const CreateEvent = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                            Title
+                            Event Title
                         </label>
                         <input
                             type="text"
@@ -65,6 +70,7 @@ const CreateEvent = () => {
                             value={formData.title}
                             onChange={handleChange}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Enter event title"
                         />
                     </div>
 
@@ -75,39 +81,23 @@ const CreateEvent = () => {
                         <textarea
                             name="description"
                             id="description"
-                            rows="4"
-                            required
+                            rows={4}
                             value={formData.description}
                             onChange={handleChange}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Enter event description"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                            Date
+                        <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                            End Date (Optional)
                         </label>
                         <input
                             type="datetime-local"
-                            name="date"
-                            id="date"
-                            required
-                            value={formData.date}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                            Location
-                        </label>
-                        <input
-                            type="text"
-                            name="location"
-                            id="location"
-                            required
-                            value={formData.location}
+                            name="endDate"
+                            id="endDate"
+                            value={formData.endDate}
                             onChange={handleChange}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         />
@@ -117,15 +107,18 @@ const CreateEvent = () => {
                         <button
                             type="button"
                             onClick={() => navigate('/events')}
-                            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+                            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            disabled={isLoading}
+                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                                isLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'
+                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}
                         >
-                            Create Event
+                            {isLoading ? 'Creating...' : 'Create Event'}
                         </button>
                     </div>
                 </form>
